@@ -2,21 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\ConsoleCommandHelper;
-use Illuminate\Console\Command;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-
-class PaymentTest extends Command
+class ErrorTest extends Test
 {
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'web_service:test {url} {api_key} {callback}';
+    protected $signature = 'web_service:error {url} {api_key} {callback}';
 
     /**
      * The console command description.
@@ -25,81 +18,9 @@ class PaymentTest extends Command
      */
     protected $description = 'Command description';
 
-
-    public function handle(ConsoleCommandHelper $commandHelper)
-    {
-        foreach ($this->data() as $datum) {
-
-            $request = Request::create(route('curl'), 'POST', $datum['request']);
-
-            $response = app()->handle($request);
-
-
-            $response = !empty($response->getContent()) ? $response->toArray() : ['چواب سرویس خای است'];
-
-            $diffs = $this->whatCompareIsEqualArray($response, $datum['response']);
-
-            if (!empty($diffs)) {
-                $prepareData = $datum['request']['data'];
-                \App\Helpers\Helper::convertToString($prepareData);
-
-                $commandHelper->setInfoLog('compare');
-                $commandHelper->setInfoLog('request' , $prepareData);
-                $commandHelper->setInfoLog('headers' , [
-                    'api-key' => $datum['request']['api_key'] ?? '',
-                    'url' => $datum['request']['url'] ?? '',
-                ]);
-                $commandHelper->setInfoLog('services response' , $response);
-                $commandHelper->setInfoLog('expected response' , $datum['response']);
-                $commandHelper->setInfoLog('diffs' , $diffs);
-                $commandHelper->customLine();
-            }
-        }
-
-        return 0;
-    }
-
-    private function whatCompareIsEqualArray(array $array1, array $array2)
-    {
-        $array1DotItems = Arr::dot($array1);
-        $array2DotItems = Arr::dot($array2);
-
-        $diffs = [];
-        foreach ($array1DotItems as $array1DotItemKey => $array1DotItemValue) {
-            if (empty($array2DotItems[$array1DotItemKey])
-                || !Str::is($array2DotItems[$array1DotItemKey], $array1DotItemValue)
-                || gettype($array2DotItems[$array1DotItemKey]) !== gettype($array1DotItemValue)
-            ) {
-                $diffs[$array1DotItemKey] = $array1DotItemValue;
-            }
-        }
-
-        return $diffs;
-    }
-
     public function data(): array
     {
         return [
-            [
-                'request' => [
-                    "data" => [
-                        "order_id" => 1,
-                        "amount" => "10000",
-                        "name" => "Ali Jazayeri",
-                        "phone" => "091223125684",
-                        "mail" => "my@site.com",
-                        "desc" => "توضیحات پرداخت کننده",
-                        "callback" => $this->argument('callback')
-                    ],
-                    "api_key" => $this->argument('api_key'),
-                    "url" => $this->argument('url') . '/payment'
-                ],
-                'response' => [
-                    "id" => "*",
-                    "link" => "*"
-
-                ],
-            ],
             [
                 'request' => [
                     "data" => [

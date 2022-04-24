@@ -145,6 +145,6 @@ class ConsoleCommandHelper extends Command
 
     public function customLine($className = null)
     {
-        $this->setInfoLog('------------------------------' . Str::kebab($className) . '------------------------------');
+        $this->comment('------------------------------------------------------------------' . Str::kebab($className) . '------------------------------------------------------------------');
     }
 }

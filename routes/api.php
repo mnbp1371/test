@@ -15,17 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('curl', function (Request $request) {
-    $data = $request->input('data');
+    $data = $request->input('data', []);
     App\Helpers\Helper::convertToString($data);
     return \Illuminate\Support\Facades\Http::acceptJson()->withHeaders([
         'X-API-KEY' => $request->get('api_key'),
     ])->post($request->get('url'), $data)->json();
 })->name('curl');
-
-Route::get('hi', function (Request $request) {
-    return response()->json([
-        'name' => '30'
-    ]);
-})->name('hi');
 
 

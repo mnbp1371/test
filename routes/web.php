@@ -1,6 +1,8 @@
 <?php
 
+use App\Helpers\ConsoleCommandHelper;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::any('/callback', \App\Http\Controllers\CallBackController::class)->name('callback');
